@@ -1,0 +1,275 @@
+import java.util.*;
+public class Gradebook
+{
+    public static void main (String [] args)
+    {
+       //  2D array 7 rows and 4 columns for 7 students with 4 tests
+       int [] [] scores = new int [7][4];
+       double avg, rowAvg, colAvg;
+       int range, rowHighest, rowLowest;
+       
+       Scanner stdin = new Scanner(System.in);
+       
+       //For loop to ge the input for the 7 students with 4 exams
+       for( int row = 0; row < 7; row++)
+       {
+           System.out.println("Enter the 4 scores for student #" + (row + 1) + ".");
+           System.out.print("Hit enter key after each score entered: ");
+           
+           for(int column = 0; column < 4; column++)
+           {
+               scores [row][column] = stdin.nextInt();
+           }//end inner loop
+           
+           
+           System.out.println();
+           
+       }//end  outer loop
+       
+       //printArray method
+       printArray(scores);
+       
+       //Avg method
+       avg = getClassAvg(scores);
+       System.out.printf("The class average of all grades is: %2.1f", avg);
+       System.out.println();
+       
+       //Range method
+       range = getRange(scores);
+       System.out.println("The range of all grades is: " + range);
+       System.out.println();
+       System.out.println();
+       
+       //for loop for the prints for average of the students
+       for(int i = 0; i < 7; i++)
+       {
+           System.out.printf("The average for student #%d is: %2.1f", (i+1), getRowAverage(scores, i));
+           System.out.println();
+       }
+       System.out.println();
+       
+       //for loops for the prints for the tests of the students
+       for(int i = 0; i < 4; i++)
+       {
+           System.out.printf("The average for test#%d: %2.1f", (i+1), getColumnAverage(scores,i));
+           System.out.println();
+       }
+       System.out.println();
+       
+       //for loop for the highest test of each student
+       for(int i = 0; i < 7; i++)
+       {
+           System.out.printf("The highest test grade for student #%d: %2d", (i+1), getHighestInRow(scores,i));
+           System.out.println();
+       }
+       System.out.println();
+       
+       //for loop for the lowest exam
+       for(int i = 0; i < 7; i++)
+       {
+           System.out.printf("The lowest exam grade for student#%d: %2d", (i+1), getLowestInRow(scores,i));
+           System.out.println();
+       }
+       System.out.println();
+ 
+       //for loop for the STD for test
+       for(int i = 0; i < 4; i++)
+       {
+           System.out.printf("The standard deviation for test #%d: %2.1f", (i+1), getStandardDeviation(scores,i));
+           System.out.println();
+       }
+       System.out.println();
+        
+        //getGrades prints
+        getGrades(scores);
+    }
+    
+    public static void printArray (int [][] array)
+    {
+        System.out.println("          Exam#1  Exam#2  Exam#3  Exam#4");
+        
+        for(int row = 0; row < 7; row++)
+        {
+            System.out.printf("Student #%1d", (row + 1));
+            
+            for(int column = 0; column < 4; column++)
+            {
+                System.out.printf("%6d  ", array[row][column]);
+            }
+            System.out.println();
+        }
+        System.out.println();
+    }
+    
+    public static double getClassAvg(int [] [] array)
+    {
+        double avg;
+        int sum = 0;
+        int count = 0;
+        
+        for(int row = 0; row <  7; row++)
+        {
+            for( int column = 0; column < 4; column++)
+            {
+                sum += array[row][column];
+                count++;
+            }
+        }
+        avg = (double) sum / count;
+        
+        return avg;
+    }
+    
+    public static int getRange(int[][] array)
+    {
+        int max = array[0][0];
+        int min = array[0][0];
+        int range;
+        
+        for(int row = 0; row < 7; row++)
+        {
+            for(int column = 0; column < array[row].length; column++)
+            {
+                if(array[row][column] > max)
+                    max = array[row][column];
+                if(array[row][column] < min)
+                    min = array[row][column];
+            }
+        }
+        range = max - min;
+        return range;
+    }
+    
+    public static double getRowAverage(int [][] array, int rows)
+    {
+        double rowAvg;
+        int counter = 0;
+        int total = 0;
+        
+        for ( int column = 0; column < array[rows].length; column++)
+        {
+            total += array[rows][column];
+            counter++;
+        }
+        rowAvg = (double) total / counter;
+        
+        return rowAvg;
+    }
+    
+    public static double getColumnAverage(int [][] array, int input)
+    {
+        int counter = 0;
+        double total = 0;
+        
+        for(int row = 0; row < array.length; row++)
+        {
+            total += array[row][input];
+            counter++;
+        }
+       
+        return (double) total / counter;
+    }
+    
+    public static int getHighestInRow (int [][] array, int high)
+    {
+        int max = array[high][0];
+        
+        for(int column = 0; column < array[high].length; column++)
+        {
+            if(array[high][column] > max)
+                max = array[high][column];
+        }
+        
+        return max;
+    }
+    
+    public static int getLowestInRow (int [][] array, int low)
+    {
+        int min = array[low][0];
+        
+        for( int column = 0; column < array[low].length; column++)
+        {
+            if(array[low][column] < min)
+                min = array[low][column];
+        }
+        return min;
+    }
+    
+    public static double getStandardDeviation (int [][] array, int std)
+    {
+        double diff, newResult;
+        double result = 0;
+        double finalResult;
+        
+        for( int row = 0; row < array.length ; row++)
+        {
+            //array - col average to the 2nd power
+            diff = Math.pow(array[row][std] - getColumnAverage(array, std), 2);
+            result += diff;
+        }
+        newResult = (double) result / array.length;
+        finalResult = Math.sqrt(newResult);
+        
+        return finalResult;
+    }
+    
+    public static void getGrades(int [][] array)
+    {
+       double average;
+       double sum = 0;
+       int counter = 0;
+       
+       //outer for loop
+       for(int row = 0; row < 7; row++)
+       {
+           //inner for loop
+           for(int columns = 0; columns < 4; columns++)
+           {
+                sum += array[row][columns];
+           }
+        
+        average = (sum - getLowestInRow(array, row)) / 3.0;
+        counter++;
+        
+        //If-else chain and its logic   
+        if(average > 89.9)
+        {
+            System.out.printf("Student#%d had an average of %2.1f (after dropping the lowest score).\n",counter, average);
+            System.out.println("This Student received a grade of A in the class.");
+            System.out.println();
+        }
+        else if(average > 79.9)
+        {
+            System.out.printf("Student#%d had an average of %2.1f (after dropping the lowest score).\n",counter, average);
+            System.out.println("This Student received a grade of B in the class.");
+            System.out.println();
+        }
+        else if(average > 69.9)
+        {
+            System.out.printf("Student#%d had an average of %2.1f (after dropping the lowest score).\n",counter, average);
+            System.out.println("This Student received a grade of C in the class.");
+            System.out.println();
+        }
+        else if(average > 59.9)
+        {
+            System.out.printf("Student#%d had an average of %2.1f (after dropping the lowest score).\n",counter, average);
+            System.out.println("This Student received a grade of D in the class.");
+            System.out.println();
+        }
+        else
+        {
+            System.out.printf("Student#%d had an average of %2.1f (after dropping the lowest score).\n",counter, average);
+            System.out.println("This Student received a grade of F in the class.");
+            System.out.println();
+        }
+        
+        //setting the sum equal to zero to restart
+        sum = 0;
+        
+       }
+       
+       
+    }
+    
+    
+}
